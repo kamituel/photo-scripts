@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-TRASH_DIR="./trash"
-
-DIR=$1
+TRASH_DIR=$1
+DIR=$2
 
 if [ -z "$DIR" ]; then
-	echo "Usage: ./delete_raw_with_no_jpeg directory"
+	echo "Usage: ./delete_raw_with_no_jpeg trash directory"
 	exit 1
 fi
 
 echo $DIR
+echo $TRASH_DIR
 
 for raw in "$DIR""/_raw/"*.ARW; do
 	echo -n $raw ": "

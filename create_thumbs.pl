@@ -26,11 +26,13 @@ my %FILE_TYPES = (
 #	"arw", undef
 );
 
+my $BASE_DIR = "/Users/kls/Desktop/Volumes/seagate/zdjecia";
+
 # Directory where raw files are kept. This directory will not be modified.
-my $INPUT_DIR = "./raw";
+my $INPUT_DIR = $BASE_DIR . "/raw";
 
 # Output directory.
-my $OUTPUT_DIR = "./medium";
+my $OUTPUT_DIR = $BASE_DIR . "/medium";
 
 #### CODE ####
 
@@ -56,13 +58,13 @@ my $validate_result = iterate_over_dir(
 		}
 
 		# Abort unless destination dir exists or can be created.
-		my $out = "$OUTPUT_DIR/$dir"; 
+		my $out = "$OUTPUT_DIR/$dir";
 	 	return "Output dir $dir cannot be created.\n" unless ( -d $out or mkdir $out );
 
 		$count_dirs++;
 
 		return undef;
-	}, 
+	},
 	sub {
 		my ($dir, $file) = @_;
 
@@ -80,8 +82,8 @@ my $validate_result = iterate_over_dir(
   		unless ( exists($FILE_TYPES{lc($extension)}) ) {
    			return "$dir/$file: unknown type\n";
   		}
-	
-		$count_files++; 
+
+		$count_files++;
 
 		return undef;
 	}
@@ -100,7 +102,7 @@ my $total_output_size = 1;
 iterate_over_dir(
 	sub {
 		my $dir = shift;
-		
+
 		# Skip directory if it's name does not match the pattern
 		if ( defined $pattern and length($pattern) > 0 and not ($dir =~ /$pattern/i) ) {
 			return 0;
@@ -118,7 +120,7 @@ iterate_over_dir(
 		return undef unless defined $cmd;
 
 		$extension = $1 if $cmd =~ /__OUTPUT_([^_\s]+)_/;
-	
+
 		# Do not process files that exist in output directory.
 		return undef if -f "$OUTPUT_DIR/$dir/$basename.$extension";
 
@@ -150,10 +152,10 @@ sub get_extension {
 }
 
 sub iterate_over_dir {
-  my $on_dir_cbk = shift;			# Callback. Returns: 
-						#    undef (if ok), 
-						#    zero (if dir should be skipped) 
-						#    error message (script will abort). 
+  my $on_dir_cbk = shift;			# Callback. Returns:
+						#    undef (if ok),
+						#    zero (if dir should be skipped)
+						#    error message (script will abort).
   my $on_file_cbk = shift;
 
   my $ret = "";
@@ -171,7 +173,7 @@ sub iterate_over_dir {
 		next;
 	} else {
 		$ret .= $dir_cbk_ret;
-		return $ret;	
+		return $ret;
 	}
 
 	opendir my $folder, $INPUT_DIR."/".$dir or die "Could not list files in $INPUT_DIR/$dir\n";
