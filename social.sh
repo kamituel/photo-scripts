@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Resizes an image so it longer dimension has 2000px
+# and add a caption.
+
+convert $1 \
+        -resize 2000x2000\> \
+        -bordercolor black \
+        -border 2%x \
+        -font UnicaOne-Regular.ttf \
+        -fill '#DDDDDD' \
+        -pointsize 30 \
+        -gravity north \
+        -annotate +0+2 'KAMIL LESZCZUK : KAMITUEL.PL' \
+        -append \
+        ${1/.jpg/-social.jpg}
+
