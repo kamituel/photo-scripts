@@ -17,14 +17,18 @@ width=$(identify $1 | cut -d \  -f 3 | cut -d x -f 1)
 height=$(identify $1 | cut -d \  -f 3 | cut -d x -f 2)
 landscape=$(expr $width / $height)
 
+out_longer_dimension=2600
+
 if [ $landscape = 1 ]; then
+        width=$out_longer_dimension
 	border=$(bc <<< "$width / 100")
 	fontsize=$(bc <<< "$width / 80")
 	text_offset_y=$(bc <<< "$width / 270")
 else
-	border=$(bc <<< "$height / 100")
-	fontsize=$(bc <<< "$height / 100")
-	text_offset_y=$(bc <<< "$height / 200")
+        height=$out_longer_dimension
+	border=$(bc <<< "$height / 60")
+	fontsize=$(bc <<< "$height / 60")
+	text_offset_y=$(bc <<< "$height / 120")
 fi
 
 if [ ! -z $2 ]; then
@@ -32,7 +36,7 @@ if [ ! -z $2 ]; then
 fi
 
 convert $1 \
-        -resize 2600x2600\> \
+        -resize ${out_longer_dimension}x${out_longer_dimension}\> \
         -background $bg_color \
         -splice 0x${border} \
         -bordercolor $bg_color \
