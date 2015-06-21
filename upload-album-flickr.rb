@@ -7,7 +7,7 @@ FlickRaw.shared_secret="3e76aa1b363a984f"
 
 $config_path = "#{Dir.home}/km.flickr.config"
 
-def authenticate  
+def authenticate
   if not File.exists?($config_path)
     File.open($config_path, 'w') do |out|
       YAML.dump( {}, out )
@@ -30,12 +30,12 @@ def authenticate
 
     begin
       flickr.get_access_token(token['oauth_token'], token['oauth_token_secret'], verify)
-      config['oauth_token'] = flickr.access_token 
-      config['oauth_token_secret'] = flickr.access_secret 
+      config['oauth_token'] = flickr.access_token
+      config['oauth_token_secret'] = flickr.access_secret
     rescue FlickRaw::FailedResponse => e
       puts "Authentication failed : #{e.msg}"
     end
-  end 
+  end
 
   File.open( $config_path, 'w' ) do |out|
     YAML.dump( config, out )
@@ -46,7 +46,7 @@ def revokeAuthTokens
   File.delete($config_path)
 end
 
-def set_get(name) 
+def set_get(name)
   photosets = flickr.photosets.getList
   return photosets.detect { |photoset| photoset['title'] == name }
 end
@@ -92,9 +92,8 @@ def set_edit_photos(set, cover_id, photo_ids)
   return flickr.photosets.editPhotos(:photoset_id => set['id'], :primary_photo_id => cover_id, :photo_ids => photo_ids)
 end
 
-def upload_photo(filepath)
+def upload_photo(filepath, album_name)
   filename = File.basename(filepath)
-  album_name = File.basename(File.dirname(filepath))
   flickr.upload_photo(filepath, :title => File.basename(filepath), :description => str_sanitize(album_name), :is_public => 0, :is_family => 0, :is_friend => 0, :content_type => 1)
 end
 
@@ -113,12 +112,25 @@ def str_sanitize(str)
   str.delete("^[a-zA-Z0-9]")
 end
 
+# For input such as: /some/directory/name, album name will be "name",
+# for input such as: /some/directory/name/out, album name will be "name".
+# So, in C1 session, set output folder name to "out".
+def get_album_name(dir)
+  path_parts = dir.split(File::SEPARATOR)
+
+  if path_parts[-1] == "out"
+    path_parts[-2]
+  else
+    path_parts[-1]
+  end
+end
+
 def upload_dir_as_set(dir)
   if not dir.end_with?('/')
     dir = dir + "/"
   end
 
-  album_name = File.basename(dir)
+  album_name = get_album_name(dir)
 
   begin
     authenticate
@@ -150,7 +162,7 @@ def upload_dir_as_set(dir)
         next
       end
 
-      remote_photo_id = upload_photo(dir + item)
+      remote_photo_id = upload_photo(dir + item, album_name)
       print "Uploaded\n"
       STDOUT.flush
 
