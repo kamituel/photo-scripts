@@ -55,6 +55,9 @@ border_width_px=$( expr \( $paper_width_px - $photo_width_px \) / 2 )
 # Bottom border consists of regular border, plus extra space to make it wider
 bottom_border_px=$( expr $paper_height_px - $photo_height_px -  2 \* $border_width_px )
 
+out=${1/.jpg/-polaroid.jpg}
+out=${out/.JPG/-polaroid.JPG}
+
 convert $1 \
         -thumbnail ${photo_width_px}x${photo_width_px}^ \
         -extent ${photo_width_px}x${photo_height_px}+${offset_x}+${offset_y} \
@@ -66,5 +69,5 @@ convert $1 \
         -density 300 \
         -bordercolor grey \
         -border 2x2 \
-        ${1/.jpg/-polaroid.jpg}
+        $out
 
