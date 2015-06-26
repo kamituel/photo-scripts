@@ -21,14 +21,16 @@ out_longer_dimension=2600
 
 if [ $landscape = 1 ]; then
         width=$out_longer_dimension
-	border=$(bc <<< "$width / 100")
-	fontsize=$(bc <<< "$width / 80")
-	text_offset_y=$(bc <<< "$width / 270")
+	border=$(bc <<< "$width / 75")
+        top_border=$(bc <<< "$border * 1.5")
+	fontsize=$(bc <<< "$width / 60")
+	text_offset_y=$(bc <<< "$width / 120")
 else
         height=$out_longer_dimension
-	border=$(bc <<< "$height / 60")
-	fontsize=$(bc <<< "$height / 60")
-	text_offset_y=$(bc <<< "$height / 120")
+	border=$(bc <<< "$height / 55")
+        top_border=$(bc <<< "$border * 1.5")
+	fontsize=$(bc <<< "$height / 50")
+	text_offset_y=$(bc <<< "$height / 80")
 fi
 
 if [ ! -z $2 ]; then
@@ -37,15 +39,18 @@ fi
 
 convert $1 \
         -resize ${out_longer_dimension}x${out_longer_dimension}\> \
+        -bordercolor $font_color \
+        -border 3x3 \
         -background $bg_color \
-        -splice 0x${border} \
+        -splice 0x${top_border} \
         -bordercolor $bg_color \
         -border ${border}x${border} \
         -font $DIR/Inconsolata-Bold.ttf \
         -fill $font_color \
         -pointsize ${fontsize} \
         -gravity north \
-        -annotate +0+${text_offset_y} 'K A M I L   L E S Z C Z U K   -   K A M I T U E L . P L' \
+        -kerning 14 \
+        -annotate +0+${text_offset_y} 'KAMIL  LESZCZUK  -  KAMITUEL.PL' \
         -append \
         ${1/.jpg/-social.jpg}
 
