@@ -10,7 +10,7 @@
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 # -font $DIR/Cabin-Regular-TTF.ttf \
-font_color=white
+font_color="#bbbbbb"
 bg_color=black
 
 width=$(identify $1 | cut -d \  -f 3 | cut -d x -f 1)
@@ -21,10 +21,10 @@ out_longer_dimension=2600
 
 if [ $landscape = 1 ]; then
         width=$out_longer_dimension
-	border=$(bc <<< "$width / 75")
+	border=$(bc <<< "$width / 45")
         top_border=$(bc <<< "$border * 1.5")
-	fontsize=$(bc <<< "$width / 60")
-	text_offset_y=$(bc <<< "$width / 120")
+	fontsize=$(bc <<< "$width / 55")
+	text_offset_y=3
 else
         height=$out_longer_dimension
 	border=$(bc <<< "$height / 55")
@@ -40,17 +40,17 @@ fi
 convert $1 \
         -resize ${out_longer_dimension}x${out_longer_dimension}\> \
         -bordercolor $font_color \
-        -border 3x3 \
         -background $bg_color \
-        -splice 0x${top_border} \
         -bordercolor $bg_color \
         -border ${border}x${border} \
         -font $DIR/Inconsolata-Bold.ttf \
         -fill $font_color \
         -pointsize ${fontsize} \
-        -gravity north \
         -kerning 14 \
-        -annotate +0+${text_offset_y} 'KAMIL  LESZCZUK  -  KAMITUEL.PL' \
+        -gravity northwest \
+        -annotate +${border}+${text_offset_y} 'KAMIL LESZCZUK' \
+        -gravity northeast \
+        -annotate +${border}+${text_offset_y} 'KAMITUEL.PL' \
         -append \
         ${1/.jpg/-social.jpg}
 
