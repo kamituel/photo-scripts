@@ -22,15 +22,13 @@ out_longer_dimension=2600
 if [ $landscape = 1 ]; then
         width=$out_longer_dimension
 	border=$(bc <<< "$width / 45")
-        top_border=$(bc <<< "$border * 1.5")
 	fontsize=$(bc <<< "$width / 55")
 	text_offset_y=3
 else
         height=$out_longer_dimension
-	border=$(bc <<< "$height / 55")
-        top_border=$(bc <<< "$border * 1.5")
-	fontsize=$(bc <<< "$height / 50")
-	text_offset_y=$(bc <<< "$height / 80")
+	border=$(bc <<< "$height / 36")
+	fontsize=$(bc <<< "$height / 45")
+	text_offset_y=5
 fi
 
 if [ ! -z $2 ]; then
