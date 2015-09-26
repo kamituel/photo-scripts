@@ -22,8 +22,8 @@ out_longer_dimension=2600
 if [ $landscape = 1 ]; then
         width=$out_longer_dimension
 	border=$(bc <<< "$width / 45")
-	fontsize=$(bc <<< "$width / 55")
-	text_offset_y=3
+	fontsize=$(bc <<< "$width / 60")
+	text_offset_y=6
 else
         height=$out_longer_dimension
 	border=$(bc <<< "$height / 36")
@@ -50,5 +50,6 @@ convert $1 \
         -gravity northeast \
         -annotate +${border}+${text_offset_y} 'KAMITUEL.PL' \
         -append \
+        -type truecolor \
         ${1/.jpg/-social.jpg}
 
