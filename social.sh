@@ -13,13 +13,17 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 font_color="#bbbbbb"
 bg_color=black
 
-width=$(identify $1 | cut -d \  -f 3 | cut -d x -f 1)
-height=$(identify $1 | cut -d \  -f 3 | cut -d x -f 2)
+width=$(identify "$1" | perl -ne "s/.* (\d+)x(\d+) .*/\$1/; print;")
+height=$(identify "$1" | perl -ne "s/.* (\d+)x(\d+) .*/\$2/; print;")
 landscape=$(expr $width / $height)
 
 out_longer_dimension=2600
-
-if [ $landscape = 1 ]; then
+if [ $width = $height ]; then
+	width=$out_longer_dimension
+	border=$(bc <<< "$width / 36")
+	fontsize=$(bc <<< "$width / 45")
+	text_offset_y=5
+elif [ $landscape = 1 ]; then
         width=$out_longer_dimension
 	border=$(bc <<< "$width / 45")
 	fontsize=$(bc <<< "$width / 60")
@@ -35,7 +39,7 @@ if [ ! -z $2 ]; then
 	fontsize=$2
 fi
 
-convert $1 \
+convert "$1" \
         -resize ${out_longer_dimension}x${out_longer_dimension}\> \
         -bordercolor $font_color \
         -background $bg_color \
@@ -51,5 +55,5 @@ convert $1 \
         -annotate +${border}+${text_offset_y} 'KAMITUEL.PL' \
         -append \
         -type truecolor \
-        ${1/.jpg/-social.jpg}
+        "${1/.jpg/-social.jpg}"
 
