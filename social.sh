@@ -40,6 +40,7 @@ if [ ! -z $2 ]; then
 fi
 
 convert "$1" \
+        -colorspace sRGB \
         -resize ${out_longer_dimension}x${out_longer_dimension}\> \
         -bordercolor $font_color \
         -background $bg_color \
@@ -55,5 +56,6 @@ convert "$1" \
         -annotate +${border}+${text_offset_y} 'KAMITUEL.PL' \
         -append \
         -type truecolor \
+        -colorspace sRGB \
         "${1/.jpg/-social.jpg}"
 
