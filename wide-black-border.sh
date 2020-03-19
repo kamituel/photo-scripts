@@ -19,24 +19,24 @@ height=$(identify "$1" | perl -ne "s/.* (\d+)x(\d+) .*/\$2/; print;")
 landscape=$(expr $width / $height)
 
 out_longer_dimension=2600
-if [ -z "$SMALL_BORDER" ] && [ -z "${NO_BORDER}" ]; then
+if [ -z "$SMALL_BORDER" ]; then
   if [ $width = $height ]; then
     width=$out_longer_dimension
-    border=$(bc <<< "$width / 45")
+    border=$(bc <<< "$width / 2")
     fontsize=$(bc <<< "$width / 80")
     text_offset_y=$(bc <<< "${fontsize} - 5")
   elif [ $landscape = 1 ]; then
     width=$out_longer_dimension
-    border=$(bc <<< "$width / 60")
+    border=$(bc <<< "$width / 2")
     fontsize=$(bc <<< "$width / 105")
     text_offset_y=$(bc <<< "${fontsize} - 5")
   else
     height=$out_longer_dimension
-    border=$(bc <<< "$height / 50")
+    border=$(bc <<< "$height / 2")
     fontsize=$(bc <<< "$height / 105")
     text_offset_y=$(bc <<< "${fontsize} + 2")
   fi
-elif [ -z "${NO_BORDER}" ]; then
+else
   if [ $width = $height ]; then
   	width=$out_longer_dimension
   	border=$(bc <<< "$width / 85")
@@ -53,27 +53,13 @@ elif [ -z "${NO_BORDER}" ]; then
   	fontsize=$(bc <<< "$height / 105")
   	text_offset_y=3
   fi
-else
-  if [ $width = $height ]; then
-  	width=$out_longer_dimension
-  	border=0
-    fontsize=1
-  elif [ $landscape = 1 ]; then
-    width=$out_longer_dimension
-  	border=0
-    fontsize=1
-  else
-    height=$out_longer_dimension
-  	border=0
-    fontsize=1
-  fi
 fi
 
 if [ ! -z $2 ]; then
 	fontsize=$2
 fi
 
-if [ -z "$SMALL_BORDER" ] && [ -z "$NO_BORDER" ]; then
+if [ -z "$SMALL_BORDER" ]; then
   AUTHOR="KAMIL LESZCZUK"
   WEBSITE="KAMITUEL.PL"
 else
@@ -99,4 +85,4 @@ convert "$1" \
         -append \
         -type truecolor \
         -colorspace sRGB \
-        "${1/.jpg/-social.jpg}"
+        "${1/.jpg/-wide-border.jpg}"

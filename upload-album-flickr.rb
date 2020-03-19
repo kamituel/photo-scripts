@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 require 'flickraw'
 require 'yaml'
+require 'optparse'
+require 'mini_exiftool'
 
 FlickRaw.api_key="b32ada91d04a3a8f846875c0d29f9f5a"
 FlickRaw.shared_secret="3e76aa1b363a984f"
@@ -200,20 +202,95 @@ def upload_dir_as_set(dir)
   end
 end
 
+def split_i18n_str(s)
+  if not s
+    return {:pl => "", :en => ""}
+  end
+
+  pl, en = s.match(/PL:(.*)EN:(.*)/).captures
+
+  if pl and en
+    pl.strip!
+    en.strip!
+    return {:pl => pl, :en => en}
+  else
+    return {:pl => s.strip, :en => s.strip}
+  end
+end
+
 # ====
 
-dir = ARGV.shift
+opts = {}
+OptionParser.new do |opt|
+  opt.on('-p', '--photo FILE_PATH') { |o| opts[:photo] = o }
+  opt.on('-a', '--album DIR_PATH') { |o| opts[:album] = o }
+  opt.on('--fix-album-order') { |o| opts[:fix_album_order] = o }
+end.parse!
 
-if not dir
-  p "When called with no argument, will fix set ordering"
+puts opts
+
+if opts[:album] and opts[:photo]
+  p 'Cannot upload both an album and a photo at the same time.'
+  exit 1
+end
+
+if opts[:album]
+  authenticate
+
+  dir = opts[:album]
+  if not File.directory?(dir)
+    p "#{dir} is not a directory"
+    exit -1
+  end
+
+  upload_dir_as_set(dir)
+end
+
+if opts[:photo]
+  authenticate
+
+  photo_file = opts[:photo]
+  phot_meta = MiniExiftool.new(photo_file)
+  puts phot_meta.f_number
+  puts phot_meta.focal_length_in_35mm_film
+  puts phot_meta.exposure_time
+  puts phot_meta.artist
+  puts phot_meta.maker_note
+  puts phot_meta.model
+  puts phot_meta.user_comment
+  puts phot_meta.comment
+  puts phot_meta.creator
+  puts phot_meta.headline
+  puts phot_meta.description
+  puts phot_meta.category
+
+
+
+  title = split_i18n_str(phot_meta.headline)
+  desc = split_i18n_str(phot_meta.description)
+
+  puts title
+  puts desc
+
+  standard_groups = ["alpha-nex", "captureone", "2335287@N24", "sony-a7", "ilce-7", "sony_alpha_dslr-a200"]
+  emount_lens_groups = ["nex-lenses"]
+  batis85 = ["2803969@N25"]
+
+
+  # flickr.groups.pools.add(:photo_id => "30166719022", :group_id => "2803969@N25")
+
+  exit
+  flickr.upload_photo(filepath,
+                      :title => title[:en],
+                      :description => desc[:en],
+                      :is_public => 1,
+                      :content_type => 1,
+                      :tags => "")
+
+
+end
+
+if opts[:fix_album_order]
   authenticate
   set_order_alphabetically
-  exit 0
 end
-
-if not File.directory?(dir)
-  p "#{dir} is not a directory"
-  exit -1
-end
-
-upload_dir_as_set(dir)

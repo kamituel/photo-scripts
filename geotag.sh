@@ -1,5 +1,11 @@
 #!/bin/sh
 
+file=$1
+lat=""
+lat_ref=""
+lon=""
+lon_ref=""
+
 function usage {
 	echo
 	echo "Usage:"
@@ -10,15 +16,36 @@ function usage {
 	exit
 }
 
-if [ "$#" -ne 5 ]; then
-	usage "Invalid number of arguments passed: $#."
+
+if [ "$#" -eq 3 ]
+then
+  # Parse coordinates in format: -19.714906, -67.064665
+  lat=${2:0:${#2} - 1}
+  lon=$3
+  if [[ $lat == -* ]]; then
+    lat_ref="S"
+    lat=${lat:1}
+  else
+    lat_ref="N"
+  fi
+  if [[ $lon == -* ]]; then
+    lon_ref="W"
+    lon=${lon:1}
+  else
+    lon_ref="E"
+  fi
+elif [ "$#" -eq 5 ]
+then
+  # parse_direct_coords
+  lat=$2
+  lat_ref=$3
+  lon=$4
+  lon_ref=$5
+else
+  usage "Invalid number of arguments passed: $#."
 fi
 
-file=$1
-lat=$2
-lat_ref=$3
-lon=$4
-lon_ref=$5
+echo "LAT=" $lat $lat_ref ", LON=" $lon $lon_ref
 
 if [ ! -f "$file" ]; then
 	usage "File does not exist: $file"

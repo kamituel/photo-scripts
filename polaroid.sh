@@ -28,8 +28,8 @@ fi
 
 
 # Original image width / height
-width=$(identify $1 | cut -d \  -f 3 | cut -d x -f 1)
-height=$(identify $1 | cut -d \  -f 3 | cut -d x -f 2)
+width=$(identify "$1" | perl -ne 'print $1 if /.*\s(\d+)x(\d+)\s/')
+height=$(identify "$1" | perl -ne 'print $2 if /.*\s(\d+)x(\d+)\s/')
 landscape=$(expr $width / $height)
 
 # For landscape pictures, use height to crop square.
@@ -58,7 +58,7 @@ bottom_border_px=$( expr $paper_height_px - $photo_height_px -  2 \* $border_wid
 out=${1/.jpg/-polaroid.jpg}
 out=${out/.JPG/-polaroid.JPG}
 
-convert $1 \
+convert "$1" \
         -thumbnail ${photo_width_px}x${photo_width_px}^ \
         -extent ${photo_width_px}x${photo_height_px}+${offset_x}+${offset_y} \
         -background white \
@@ -69,5 +69,5 @@ convert $1 \
         -density 300 \
         -bordercolor grey \
         -border 2x2 \
-        $out
+        "$out"
 
