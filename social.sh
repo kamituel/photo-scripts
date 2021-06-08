@@ -12,7 +12,8 @@ DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 # -font $DIR/Cabin-Regular-TTF.ttf \
 font_color="#ffffff"
 bg_color="#000000"
-# bg_color="#1F1F1F"
+# font_color="#000000"
+# bg_color="#ffffff"
 
 width=$(identify "$1" | perl -ne "s/.* (\d+)x(\d+) .*/\$1/; print;")
 height=$(identify "$1" | perl -ne "s/.* (\d+)x(\d+) .*/\$2/; print;")
