@@ -1,6 +1,0 @@
-# Backs everything up, but compares files for equality based on their path (filename) only.
-# It's not suitable for Darktables .xmp files, as they can change often.
-rsync -r -v --ignore-existing raw/ /Volumes/zdjecia/raw/
-
-# Backs up .xmp files only. Does a checksum.
-rsync -r -v --include '*/' --include '*.xmp' --exclude '*'  raw/ /Volumes/zdjecia/raw/

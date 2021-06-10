@@ -1,6 +1,13 @@
 const fs = require('fs').promises
 const path = require('path')
 
+/*
+
+Usage:
+
+  node roll-naming.js directory/ roll-index film-stock actual-iso
+
+*/
 
 function formatPhotoName (imageDetails) {
   let year = `${imageDetails.year}`.padStart(4, '0')
@@ -17,9 +24,13 @@ function isPhotograph (fileName) {
 let validFilmTypes = new Set([
   'kodak-portra-400',
   'ilford-delta-3200',
+  'ilford-hp5-plus-400',
   'ilford-xp2-400',
   'fuji-neopan-acros-ii-100',
-  'kodak-ektar-100'
+  'fuji-portra-100',
+  'fuji-pro-400h-400',
+  'kodak-ektar-100',
+  'cinestill-800t-800'
 ])
 
 let validISO = new Set([
